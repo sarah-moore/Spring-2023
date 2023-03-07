@@ -1,0 +1,71 @@
+---
+title: "2: Dynamic Time Series"
+subtitle: "Time Series and Panels"
+author: "<large>J. Seawright</large>"
+institute: "<small>Northwestern Political Science</small>" 
+date: "`r format(Sys.Date(), '%A, %e %B, %Y')`"
+output: 
+  xaringan::moon_reader:
+    css: 
+      - "shinobi"
+---
+class: center, middle
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+#myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+# Note: don't forget to clear the knitr cache to account for changes in the
+# bibliography.
+```
+
+---
+class: center, middle
+
+Here is a simple time-series model:
+
+$$Y_{t} = \alpha + \beta X_{t} + \epsilon_{t}$$
+
+---
+class: center, middle
+
+Suppose the error term has an $AR(1)$ process.
+
+$$\epsilon_{t} = \rho \epsilon_{t-1} + \nu_{t}$$
+
+---
+class: center, middle
+
+$$Y_{t} = \alpha + \beta X_{t} + \rho \epsilon_{t-1} + \nu_{t}$$
+
+---
+class: center, middle
+
+$$\epsilon_{t-1} = Y_{t-1} - \alpha + \beta X_{t-1}$$
+
+---
+class: center, middle
+
+$$Y_{t} = \alpha + \beta X_{t} + \rho (Y_{t-1} - \alpha + \beta X_{t-1}) + \nu_{t}$$
+--
+
+$$Y_{t} = (1 - \rho) \alpha + \rho Y_{t-1} + \beta X_{t} - \rho \beta X_{t-1} + \nu_{t}$$
+
+---
+class: center, middle
+
+A more general time-series regression model:
+
+$$Y_{t} = \alpha Y_{t-1} + \beta X_{t} + u_{t}$$
+
+$$X_{t} = \rho X_{t-1} + e_{1,t}$$
+
+$$u_{t} = \phi u_{t-1} + e_{2,t}$$

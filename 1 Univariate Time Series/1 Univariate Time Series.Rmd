@@ -1,0 +1,573 @@
+---
+title: "1: Univariate Time Series"
+subtitle: "Time Series and Panels"
+author: "<large>J. Seawright</large>"
+institute: "<small>Northwestern Political Science</small>" 
+date: "`r format(Sys.Date(), '%A, %e %B, %Y')`"
+output: 
+  xaringan::moon_reader:
+    css: 
+      - "shinobi"
+---
+class: center, middle
+
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+# Note: don't forget to clear the knitr cache to account for changes in the
+# bibliography.
+```
+
+---
+# Business
+
+- <font size="10">Office Hours</font>
+- <font size="10">Three lab assignments</font>
+- <font size="10">Final paper</font>
+
+---
+class: center, middle
+
+<font size="10">Univariate time series are less common than panels in the social sciences.</font>
+
+---
+class: center, middle
+
+<font size="10">Nevertheless, they have important uses. For example, consider the hypothesis that Alex Jones's importance covaries with attention to Donald Trump.</font>
+
+---
+class: middle
+
+```{r, echo = TRUE}
+
+library(DT)
+
+ajgoogle <- read.csv("C:/Users/jnsno/OneDrive - Northwestern University/Seawright Teaching/TSCS Teaching/ajgoogle.csv")
+```
+
+---
+class: center, middle
+
+```{r, echo = TRUE}
+
+library(DT)
+
+ajgoogle %>% datatable()
+```
+
+
+---
+class: middle
+
+```{r, echo = TRUE}
+
+library(lubridate)
+
+ym(ajgoogle$month)
+
+```
+
+---
+class: center, middle
+
+```{r, echo = TRUE}
+
+ajgoogle.ts <- ts(ajgoogle, start=2015, frequency=12)
+plot.ts(ajgoogle.ts)
+```
+
+
+---
+class: middle
+
+```{r, echo = TRUE}
+
+naive_aj_regression <- lm(alexjones ~ donaldtrump + trumpapproval, data=ajgoogle)
+
+summary(naive_aj_regression)
+
+
+```
+
+---
+class: center, middle
+
+```{r, echo = TRUE}
+
+plot(naive_aj_regression, 1)
+
+
+```
+
+---
+## White Noise
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$E(a_{t}) - E(a_{t-1}) = \cdots = 0$$
+
+$$E(a_{t}^2) = E(a^2_{t-1}) = \cdots = \sigma^2$$
+
+$$\forall (j,k) E(a_{t} a_{t-j}) = E(a_{t-k}a_{t-k-j}) = 0$$
+
+
+---
+# Lag Operator
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$\Delta^2 y_{t} = (1 - L)^2 y_{y} = y_{t} - 2 y_{t-1} + y_{t-2}$$
+---
+# Lag Operator
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+It is important to know that, for $|\alpha| < 1$:
+<br>
+<br>
+$$(1 + \alpha L + \alpha^2 L^2 + \cdots)y_{t} = \frac{y_{t}}{(1-\alpha L)}$$
+
+---
+# Autoregression
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = \phi_{1} y_{t-1} + \phi_{2} y_{t-2} + \cdots + \phi_{p} y_{t-p} + a_{t}$$
+
+$$-1 \leq \phi_{k} \leq 1$$
+
+
+---
+# Autoregression 1
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = \phi_{1} y_{t-1}+ a_{t}$$
+
+---
+# Autoregression 1
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = \phi_{1} (\phi_{1} y_{t-2} +a_{t-1})+ a_{t}$$
+
+---
+# Autoregression 1
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = \phi_{1} (\phi_{1} (\phi_{1} y_{t-3} +a_{t-2}) +a_{t-1})+ a_{t}$$
+
+---
+# Autoregression 1
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = \sum_{i=0}^{\infty}\phi^{i}_{1} a_{t-i}$$
+
+
+---
+# Moving Average
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = a_{t} + \theta_{1} a_{t-1} + \theta_{2} a_{t-2} + \cdots - \theta{k} a_{t-k}$$
+
+
+---
+# Moving Average 1
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = a_{t} - \theta_{1} a_{t-1}$$
+
+
+---
+# Moving Average 1
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = (1 - \theta L)a_{t}$$
+
+
+---
+# Moving Average 1
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t - 1} = a_{t - 1} - \theta_{1} a_{t-2}$$
+$$a_{t - 1} =  y_{t - 1} + \theta_{1} a_{t-2}$$
+
+---
+# Moving Average 1
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = a_{t} - \theta_{1} (y_{t - 1} + \theta_{1} a_{t-2})$$
+
+
+---
+# Moving Average 1
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$y_{t} = a_{t} - \sum_{i=1}^{\infty}\theta^{i}_{1} y_{t-i}$$
+
+---
+# Invertibility
+<br>
+<br>
+<br>
+
+Autoregressive models and moving average models are intimately interrelated.
+
+--
+<br>
+<br>
+<br>
+
+Most of the time, a finite-order MA process has an equivalent infinite order AR process.
+
+--
+<br>
+<br>
+<br>
+
+Any stationary AR process has an equivalent infinite MA process.
+
+
+---
+# Invertibility
+
+$$y_{t} = \phi_{1} y_{t-1} + a_{t}$$
+
+$$y_{t} = \phi_{1} L y_{t} + a_{t}$$
+$$a_{t} = y_{t} - \phi_{1} L y_{t}$$
+$$a_{t} = (1 - \phi_{1} L) y_{t}$$
+$$y_{t} = \sum_{i=0}^{\infty}\phi^{i}_{1} a_{t-i}$$
+
+$$y_{t} = \sum_{i=0}^{\infty}\phi^{i}_{1} (1 - \phi_{1} L) y_{t - i}$$
+
+$$y_{t} = \sum_{i=0}^{\infty}\phi^{i}_{1} (1 - \phi_{1} L) L^i y_{t}$$
+
+$$y_{t} = \frac{a_{t}}{(1-\phi_{1} L)}$$
+
+---
+# Invertibility
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+There is a similar process that can be undertaken to move in the opposite direction. 
+
+---
+# MA Invertibility
+
+The necessary condition for invertibility of an MA process is that the $\theta$ coefficients have values such that the equation $1 - \theta_{1} y - \cdots - \theta_{q} y^{q} = 0$ has solutions for that fall outside the unit circle.
+
+---
+#ACF: Autocorrelation function
+
+
+$$ACF(k) = \frac{cov(y_{t},y_{t+k})}{var(y_{t})}$$
+
+---
+class: center, middle
+
+```{r, echo = TRUE}
+
+acf(ajgoogle$alexjones)
+```
+---
+#ACF
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+- For an $MA(k)$ process, $ACF(j) \approx 0$ for all $j>k$.
+
+- For an $AR(k)$ process, the ACF will gradually converge toward zero. 
+
+---
+#Seasonality
+
+---
+#PACF: Partial autocorrelation function
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+- The PACF is the ACF after controlling for the intervening observations.
+
+
+---
+class: center, middle
+
+```{r, echo = TRUE}
+
+pacf(ajgoogle$alexjones)
+```
+
+---
+#PACF
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+- For an $AR(k)$ process, $PACF(j) \approx 0$ for all $j>k$.
+
+- For an $MA(k)$ process, $PACF(j) \approx 0$ for all $j>k$.
+
+---
+#ARIMA
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+- Now that we have determined whether we have an AR or an MA process, it would be nice to estimate the parameters involved.
+
+- These are the $\Phi$ parameters for AR models and the $\Theta$ parameters for MA models.
+
+- We can estimate these using a maximum-likelihood model, using our data and a specification of the time-series process of interest.
+
+---
+class: left, middle
+
+```{r, echo = TRUE}
+
+alexjones.arima <- arima(ajgoogle$alexjones, order=c(2,0,0))
+alexjones.arima
+```
+
+---
+class: left, middle
+
+```{r, echo = TRUE}
+
+alexjones.arima <- arima(ajgoogle$alexjones, order=c(3,0,0))
+alexjones.arima
+```
+
+---
+class: left, middle
+
+```{r, echo = TRUE}
+
+alexjones.arima <- arima(ajgoogle$alexjones, order=c(0,0,2))
+alexjones.arima
+```
+
+---
+class: center, middle
+
+```{r, echo = TRUE}
+
+alexjones.arima <- arima(ajgoogle$alexjones, order=c(2,0,0))
+acf(alexjones.arima$residuals)
+```
+
+---
+class: center, middle
+
+```{r, echo = TRUE}
+
+pacf(alexjones.arima$residuals)
+```
+
+---
+#Q Statistic
+
+$$Q=T(T+2) \sum_{k=1}^{s} \frac{r^{2}_{k}}{T-k}$$
+
+---
+class: left, middle
+
+```{r, echo = TRUE}
+
+library(stats)
+Box.test(alexjones.arima$residuals, lag=12, type="Ljung-Box", fitdf=2)
+```
+
+---
+#Interventions
+
+- Abrupt
+
+- Pulse
+
+- Abrupt with decay
+
+- Gradual
+
+- Etc.
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1}
+library(knitr)
+include_graphics("clarke1.jpg")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1}
+library(knitr)
+include_graphics("clarke2.jpg")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1}
+library(knitr)
+include_graphics("clarke3.jpg")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1}
+library(knitr)
+include_graphics("stolzenberg1.jpg")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1}
+library(knitr)
+include_graphics("stolzenberg2.jpg")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1}
+library(knitr)
+include_graphics("stolzenberg3.jpg")
+```
+
+
+
+
