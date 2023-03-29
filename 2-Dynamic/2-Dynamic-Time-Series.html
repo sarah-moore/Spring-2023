@@ -24,7 +24,7 @@ class: center, middle, inverse, title-slide
 ### <small>Northwestern Political Science</small>
 ]
 .date[
-### Tuesday, 7 March, 2023
+### Wednesday, 8 March, 2023
 ]
 
 ---
@@ -75,6 +75,315 @@ A more general time-series regression model:
 `$$X_{t} = \rho X_{t-1} + e_{1,t}$$`
 
 `$$u_{t} = \phi u_{t-1} + e_{2,t}$$`
+---
+class: center, middle
+
+Let's start simple: `\(\beta = \rho = \phi = 0\)`
+
+--
+
+`$$Y_{t} = \alpha Y_{t-1} +  u_{t}$$`
+
+---
+class: center, middle
+
+Consider the following:
+
+`$$Y_{t} = \beta Y_{t-1} +  \epsilon_{t}$$`
+
+`$$\epsilon_{t} = \rho \epsilon_{t-1} + \nu_{t}$$`
+
+---
+#Assume
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+`$$-1 &lt; \beta &lt; 1$$`
+
+`$$-1 &lt; \rho &lt; 1$$`
+
+---
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+`$$\rho Y_{t-1} = \rho \beta Y_{t-2} +  \rho \epsilon_{t-1}$$`
+
+`$$\rho \epsilon_{t-1} = \rho Y_{t-1} - \rho \beta Y_{t-2}$$`
+
+
+---
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+`$$Y_{t} = \beta Y_{t-1} +  \rho Y_{t-1} - \rho \beta Y_{t-2} + \nu_{t}$$`
+
+---
+#The Workhorse Model
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+`$$Y_{t} = \beta_{1} Y_{t-1} + \beta_{2} X_{t} +  \epsilon_{t}$$`
+
+`$$\epsilon_{t} = \rho \epsilon_{t-1} + \nu_{t}$$`
+
+---
+#The Workhorse Model
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+Keele and Kelly (2006) argue that the workhorse model should be estimated by OLS with a lagged dependent variable as long as:
+
+
+- The dependent variable is **stationary.**
+- The residuals are not strongly autocorrelated.
+
+---
+
+```r
+for (i in 1:(nrow(ajgoogle)-1)) {
+     ajgoogle$alexjoneslagged[i+1] &lt;- ajgoogle$alexjones[i]
+}
+
+summary(lm(alexjones~alexjoneslagged, data=ajgoogle))
+```
+
+```
+## 
+## Call:
+## lm(formula = alexjones ~ alexjoneslagged, data = ajgoogle)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -15.460  -6.144  -3.685   1.208  87.125 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      8.70996    1.82621   4.769 6.82e-06 ***
+## alexjoneslagged  0.29750    0.09981   2.981  0.00367 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 13.45 on 93 degrees of freedom
+##   (1 observation deleted due to missingness)
+## Multiple R-squared:  0.0872,	Adjusted R-squared:  0.07738 
+## F-statistic: 8.884 on 1 and 93 DF,  p-value: 0.003671
+```
+
+---
+
+```r
+for (i in 1:(nrow(ajgoogle)-2)) {
+     ajgoogle$alexjoneslagged2[i+2] &lt;- ajgoogle$alexjones[i]
+}
+
+summary(lm(alexjones~alexjoneslagged + alexjoneslagged2, data=ajgoogle))
+```
+
+```
+## 
+## Call:
+## lm(formula = alexjones ~ alexjoneslagged + alexjoneslagged2, 
+##     data = ajgoogle)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -17.653  -5.730  -3.009   2.164  87.988 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)        6.5701     1.9829   3.313  0.00132 **
+## alexjoneslagged    0.2163     0.1017   2.126  0.03621 * 
+## alexjoneslagged2   0.2683     0.1017   2.639  0.00979 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 13.09 on 91 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.1503,	Adjusted R-squared:  0.1316 
+## F-statistic: 8.048 on 2 and 91 DF,  p-value: 0.0006047
+```
+
+---
+
+```r
+summary(lm(alexjones~alexjoneslagged + alexjoneslagged2 + donaldtrump + trumpapproval, data=ajgoogle))
+```
+
+```
+## 
+## Call:
+## lm(formula = alexjones ~ alexjoneslagged + alexjoneslagged2 + 
+##     donaldtrump + trumpapproval, data = ajgoogle)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -12.689  -6.701  -3.261   1.976  53.004 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)       7.720536   6.501611   1.187    0.241
+## alexjoneslagged   0.242359   0.150907   1.606    0.115
+## alexjoneslagged2  0.050492   0.152583   0.331    0.742
+## donaldtrump       0.002491   0.120868   0.021    0.984
+## trumpapproval    -0.128185   0.309734  -0.414    0.681
+## 
+## Residual standard error: 12.17 on 44 degrees of freedom
+##   (47 observations deleted due to missingness)
+## Multiple R-squared:  0.07603,	Adjusted R-squared:  -0.007966 
+## F-statistic: 0.9052 on 4 and 44 DF,  p-value: 0.4693
+```
+
+---
+
+```r
+summary(lm(alexjones~alexjoneslagged + donaldtrump + trumpapproval, data=ajgoogle))
+```
+
+```
+## 
+## Call:
+## lm(formula = alexjones ~ alexjoneslagged + donaldtrump + trumpapproval, 
+##     data = ajgoogle)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -13.330  -6.751  -3.192   2.046  52.673 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)      8.294774   6.203443   1.337   0.1879  
+## alexjoneslagged  0.254929   0.144596   1.763   0.0847 .
+## donaldtrump     -0.003672   0.118236  -0.031   0.9754  
+## trumpapproval   -0.136455   0.305654  -0.446   0.6574  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 12.05 on 45 degrees of freedom
+##   (47 observations deleted due to missingness)
+## Multiple R-squared:  0.07373,	Adjusted R-squared:  0.01198 
+## F-statistic: 1.194 on 3 and 45 DF,  p-value: 0.3228
+```
+
+---
+#Breusch-Godfrey Lagrange Multiplier Test
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+1. Estimate the model with OLS.
+2. Regress residuals on the `\(X\)` variables and lags of the residuals.
+3. `\((n-p) R^2\)` converges to `\(\chi^{2}_{p}\)`.
+
+---
+
+```r
+library(lmtest)
+```
+
+```
+## Loading required package: zoo
+```
+
+```
+## 
+## Attaching package: 'zoo'
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+```
+
+```r
+bgtest(alexjones~alexjoneslagged + alexjoneslagged2 + donaldtrump + trumpapproval, data=ajgoogle, order=12, type="Chisq", fill=NA)
+```
+
+```
+## 
+## 	Breusch-Godfrey test for serial correlation of order up to 12
+## 
+## data:  alexjones ~ alexjoneslagged + alexjoneslagged2 + donaldtrump +     trumpapproval
+## LM test = 8.1147, df = 12, p-value = 0.7761
+```
+
+---
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+No significant results on BG?
+
+-- Just use OLS.
+
+
+---
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+Significant results on BG but the model doesn't include a lagged DV?
+
+-- Use Cochrane-Orcutt.
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

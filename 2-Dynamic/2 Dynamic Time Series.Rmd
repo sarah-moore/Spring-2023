@@ -25,6 +25,9 @@ BibOptions(check.entries = FALSE,
 #myBib <- ReadBib("assets/myBib.bib", check = FALSE)
 # Note: don't forget to clear the knitr cache to account for changes in the
 # bibliography.
+library(DT)
+
+ajgoogle <- read.csv("C:/Users/jnsno/OneDrive - Northwestern University/Seawright Teaching/TSCS Teaching/ajgoogle.csv")
 ```
 
 ---
@@ -69,3 +72,192 @@ $$Y_{t} = \alpha Y_{t-1} + \beta X_{t} + u_{t}$$
 $$X_{t} = \rho X_{t-1} + e_{1,t}$$
 
 $$u_{t} = \phi u_{t-1} + e_{2,t}$$
+---
+class: center, middle
+
+Let's start simple: $\beta = \rho = \phi = 0$
+
+--
+
+$$Y_{t} = \alpha Y_{t-1} +  u_{t}$$
+
+---
+class: center, middle
+
+Consider the following:
+
+$$Y_{t} = \beta Y_{t-1} +  \epsilon_{t}$$
+
+$$\epsilon_{t} = \rho \epsilon_{t-1} + \nu_{t}$$
+
+---
+#Assume
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$-1 < \beta < 1$$
+
+$$-1 < \rho < 1$$
+
+---
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+$$\rho Y_{t-1} = \rho \beta Y_{t-2} +  \rho \epsilon_{t-1}$$
+
+$$\rho \epsilon_{t-1} = \rho Y_{t-1} - \rho \beta Y_{t-2}$$
+
+
+---
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+$$Y_{t} = \beta Y_{t-1} +  \rho Y_{t-1} - \rho \beta Y_{t-2} + \nu_{t}$$
+
+---
+#The Workhorse Model
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+$$Y_{t} = \beta_{1} Y_{t-1} + \beta_{2} X_{t} +  \epsilon_{t}$$
+
+$$\epsilon_{t} = \rho \epsilon_{t-1} + \nu_{t}$$
+
+---
+#The Workhorse Model
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+Keele and Kelly (2006) argue that the workhorse model should be estimated by OLS with a lagged dependent variable as long as:
+
+
+- The dependent variable is **stationary.**
+- The residuals are not strongly autocorrelated.
+
+---
+```{r, echo = TRUE}
+
+for (i in 1:(nrow(ajgoogle)-1)) {
+     ajgoogle$alexjoneslagged[i+1] <- ajgoogle$alexjones[i]
+}
+
+summary(lm(alexjones~alexjoneslagged, data=ajgoogle))
+```
+
+---
+```{r, echo = TRUE}
+
+for (i in 1:(nrow(ajgoogle)-2)) {
+     ajgoogle$alexjoneslagged2[i+2] <- ajgoogle$alexjones[i]
+}
+
+summary(lm(alexjones~alexjoneslagged + alexjoneslagged2, data=ajgoogle))
+```
+
+---
+```{r, echo = TRUE}
+
+summary(lm(alexjones~alexjoneslagged + alexjoneslagged2 + donaldtrump + trumpapproval, data=ajgoogle))
+```
+
+---
+```{r, echo = TRUE}
+
+summary(lm(alexjones~alexjoneslagged + donaldtrump + trumpapproval, data=ajgoogle))
+```
+
+---
+#Breusch-Godfrey Lagrange Multiplier Test
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+1. Estimate the model with OLS.
+2. Regress residuals on the $X$ variables and lags of the residuals.
+3. $(n-p) R^2$ converges to $\chi^{2}_{p}$.
+
+---
+```{r, echo = TRUE}
+
+library(lmtest)
+
+bgtest(alexjones~alexjoneslagged + alexjoneslagged2 + donaldtrump + trumpapproval, data=ajgoogle, order=12, type="Chisq", fill=NA)
+```
+
+---
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+No significant results on BG?
+
+-- Just use OLS.
+
+
+---
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+Significant results on BG but the model doesn't include a lagged DV?
+
+-- Use Cochrane-Orcutt.
+
