@@ -1,0 +1,191 @@
+\documentclass{report}
+% Change "report" to "article" to get a page number on title page
+\usepackage{amsmath,amsfonts,amsthm,amssymb,url}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{extramarks}
+\usepackage{chngpage}
+\usepackage{soul,color}
+\usepackage{graphicx,float,wrapfig}
+
+% Homework Specific Information
+\newcommand{\hmwkTitle}{Lab 1}
+\newcommand{\hmwkDueDate}{April 14, 2023}
+\newcommand{\hmwkClass}{Time Series}
+\newcommand{\hmwkAuthorName}{Jason Seawright}
+
+% In case you need to adjust margins:
+\topmargin=-0.45in      %
+\evensidemargin=0in     %
+\oddsidemargin=0in      %
+\textwidth=6.5in        %
+\textheight=9.0in       %
+\headsep=0.25in         %
+
+% Setup the header and footer
+\pagestyle{fancy}                                                       %
+\lhead{\hmwkTitle}                                                 %
+\rhead{\firstxmark}                                                     %
+\lfoot{\lastxmark}                                                      %
+\cfoot{}                                                                %
+\rfoot{Page\ \thepage\ of\ \protect\pageref{LastPage}}                          %
+\renewcommand\headrulewidth{0.4pt}                                      %
+\renewcommand\footrulewidth{0.4pt}                                      %
+
+% This is used to trace down (pin point) problems
+% in latexing a document:
+%\tracingall
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some tools
+\newcommand{\enterProblemHeader}[1]{\nobreak\extramarks{#1}{#1 continued on next page\ldots}\nobreak%
+                                    \nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak}%
+\newcommand{\exitProblemHeader}[1]{\nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak%
+                                   \nobreak\extramarks{#1}{}\nobreak}%
+
+\newlength{\labelLength}
+\newcommand{\labelAnswer}[2]
+  {\settowidth{\labelLength}{#1}%
+   \addtolength{\labelLength}{0.25in}%
+   \changetext{}{-\labelLength}{}{}{}%
+   \noindent\fbox{\begin{minipage}[c]{\columnwidth}#2\end{minipage}}%
+   \marginpar{\fbox{#1}}%
+
+   % We put the blank space above in order to make sure this
+   % \marginpar gets correctly placed.
+   \changetext{}{+\labelLength}{}{}{}}%
+
+\newcommand{\homeworkProblemName}{}%
+\newcounter{homeworkProblemCounter}%
+\newenvironment{homeworkProblem}[1][Problem \arabic{homeworkProblemCounter}]%
+  {\stepcounter{homeworkProblemCounter}%
+   \renewcommand{\homeworkProblemName}{#1}%
+   \section*{\homeworkProblemName}%
+   \enterProblemHeader{\homeworkProblemName}}%
+  {\exitProblemHeader{\homeworkProblemName}}%
+
+\newcommand{\problemAnswer}[1]
+  {\noindent\fbox{\begin{minipage}[c]{\columnwidth}#1\end{minipage}}}%
+
+\newcommand{\problemLAnswer}[1]
+  {\labelAnswer{\homeworkProblemName}{#1}}
+
+\newcommand{\homeworkSectionName}{}%
+\newlength{\homeworkSectionLabelLength}{}%
+\newenvironment{homeworkSection}[1]%
+  {% We put this space here to make sure we're not connected to the above.
+   % Otherwise the changetext can do funny things to the other margin
+
+   \renewcommand{\homeworkSectionName}{#1}%
+   \settowidth{\homeworkSectionLabelLength}{\homeworkSectionName}%
+   \addtolength{\homeworkSectionLabelLength}{0.25in}%
+   \changetext{}{-\homeworkSectionLabelLength}{}{}{}%
+   \subsection*{\homeworkSectionName}%
+   \enterProblemHeader{\homeworkProblemName\ [\homeworkSectionName]}}%
+  {\enterProblemHeader{\homeworkProblemName}%
+
+   % We put the blank space above in order to make sure this margin
+   % change doesn't happen too soon (otherwise \sectionAnswer's can
+   % get ugly about their \marginpar placement.
+   \changetext{}{+\homeworkSectionLabelLength}{}{}{}}%
+
+\newcommand{\sectionAnswer}[1]
+  {% We put this space here to make sure we're disconnected from the previous
+   % passage
+
+   \noindent\fbox{\begin{minipage}[c]{\columnwidth}#1\end{minipage}}%
+   \enterProblemHeader{\homeworkProblemName}\exitProblemHeader{\homeworkProblemName}%
+   \marginpar{\fbox{\homeworkSectionName}}%
+
+   % We put the blank space above in order to make sure this
+   % \marginpar gets correctly placed.
+   }%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Make title
+\title{\vspace{2in}\textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\\vspace{3in}}
+\date{}
+\author{\textbf{\hmwkAuthorName}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{spacing}{1.1}
+\maketitle
+
+\newpage
+
+\begin{homeworkProblem}\emph{An AR2 Process}
+	
+Consider the $AR(2)$ process $Z_{t} = Z_{t-1} - 0.25 Z_{t-2} + a_{t}$.
+
+(a) Calculate $\rho_{1}$.
+
+(b) Use $\rho_{0}$ and $\rho_{1}$ as starting values, and use the difference equation to obtain the general form for $\rho_{k}$.
+	
+\end{homeworkProblem}
+
+\begin{homeworkProblem}\emph{An MA2 Process}
+	
+	Consider the $MA(2)$ process $Z_{t} = a_{t} - 0.1 a_{t-1} + 0.21 a_{t-2}$.
+	
+	(a) Is the model stationary? Explain your reasoning?
+	
+	(b) Is the model invertible? Explain your reasoning?
+	
+	(b) Find the ACF for the above process.
+	
+\end{homeworkProblem}
+
+\begin{homeworkProblem}\emph{ARMA in Trump's Approval Rating}
+
+A time series of President Trump's approval rating from Gallup surveys is available at:
+
+\url{http://www.presidency.ucsb.edu/data/popularity.php}
+
+Please download the data and construct a reasonable univariate ARMA model of the percent who approve of the president. Justify the decisions made in constructing this model with appropriate supporting graphs/analysis.
+
+\end{homeworkProblem}
+
+\begin{homeworkProblem}\emph{Trump's Approval and the Protests of 2020}
+    
+ The summer of 2020 was marked by a nationwide protest mobilization unlike any the US has seen for many years. Citizens, commentators, and politicians were divided over how these protests would affect Trump's approval. Would his efforts at suppressing the protests be popular, unpopular, or on average balance out? The protests began on about May 26, 2020. Treat this as an intervention into the ARMA model you estimated in the previous problem. What can you conclude about the relationship between the protests and Trump's approval rating? 
+    
+\end{homeworkProblem}
+    
+\begin{homeworkProblem}\emph{Dynamic Model of Trump's Approval}
+
+Scholars typically argue that U.S. presidential approval depends heavily on inflation and unemployment rates. Construct a dynamic model of Trump's approval rating using those two variables as predictors. You can get monthly unemployment data here:
+
+\url{https://data.bls.gov/timeseries/LNS14000000}
+
+Monthly inflation data are here:
+
+\url{https://data.bls.gov/timeseries/CUUR0000SA0L1E?output_view=pct_12mths}
+
+Make sure to address lags, autocorrelation, and any other modeling issues as appropriate.
+
+In Trump's case, it might also be useful to add monthly COVID deaths. Prior to 2020, those deaths would presumably be 0; data for 2020 can be located here (you'll have to transform them from weekly to monthly as appropriate): \url{https://covid.cdc.gov/covid-data-tracker/#trends_weeklydeaths_select_00}.
+
+\end{homeworkProblem}
+    
+\begin{homeworkProblem}\emph{ARMA in Your Own Data}
+ 
+ Throughout this quarter, I would like you to work with a time-series or panel data set that is of personal research interest. Find such a data set, and briefly describe it. If it is a pure time series, produce a viable univariate ARMA model and report the results. If your data are instead a panel, pick a single case and analyze its time series. (Some panels are too short in the time dimension for this approach; if so, please find a different, longer panel or a time series that may interest you.)
+ 
+\end{homeworkProblem}
+
+\begin{homeworkProblem}\emph{Dynamic Model in Your Own Data}
+
+Now, add multivariate structure and build a dynamic model of your time series. Discuss the issues you encounter and how you have chosen to resolve them. Explain in substantive terms what you have learned.
+ 
+\end{homeworkProblem}
+
+
+\end{spacing}
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
